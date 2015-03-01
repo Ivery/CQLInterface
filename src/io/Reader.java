@@ -3,11 +3,13 @@ package io;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import search.Searcher;
 import tables.Attribute;
 import tables.BasicEntity;
 import tables.Entity;
@@ -15,10 +17,62 @@ import tables.Relationship;
 
 public class Reader {
 
+	// TODO: check the validity of the input schema file
 	// TODO: instead of simply keywords, we can ask the users to type patterns
 	
+	public void loadSavedSchema(String path, HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    	try {
+			String line = "";
+			
+			while((line = br.readLine())!=null && line.equals("BasicEntities:") == false){
+			}
+			
+			while((line = br.readLine())!=null && line.equals("Entities:") == false){
+				String[] entityInfo = line.split(";");
+				BasicEntity entity = new BasicEntity(entityInfo[0], entityInfo[1]);
+				basicEntities.put(entityInfo[0], entity);
+			}
+			
+			while((line = br.readLine())!=null && line.equals("Relationships:") == false){
+				String[] entityInfo = line.split(";");
+				Entity entity = new Entity();
+				entity.setEntityTypeName(entityInfo[0]);
+				entity.setName(entityInfo[1]);
+				entity.setBasicType(entityInfo[2]);
+				String[] contexts = new String[0];
+				if(entityInfo[3]!=null && entityInfo[3].length()!=0){
+					entity.addContexts(new HashSet<String>(Arrays.asList(contexts)));
+				}
+				if(entityInfo[4]!=null && entityInfo[4].length()!=0){
+					for(String attribute : entityInfo[4].split(".")){
+						String[] attributeInfo = attribute.split(",");
+						String name = attributeInfo[0];
+						String basicType = attributeInfo[1];
+						String context = attributeInfo[2];
+						entity.addAttribute(name, basicType, context);
+					}
+				}
+				entities.put(entityInfo[0], entity);
+			}
+			
+			while((line = br.readLine())!=null){
+				String[] entityInfo = line.split(";");
+				Relationship newRelationship = new Relationship(entityInfo[0], entityInfo[1], entityInfo[2], entityInfo[3], entityInfo[4], entityInfo[5]);
+				relationships.put(entityInfo[0], newRelationship);
+			}
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    	
+    	
+	}
 	
-	public void createTable(HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
+	
+	public void createTable(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	String entityTypeName;
     	String basicType;
@@ -34,8 +88,8 @@ public class Reader {
 				
 				if(entityTypeName == null || entityTypeName.length() == 0 || Pattern.matches("[a-z]+", entityTypeName)==false){
 					System.out.println("ERROR: Please enter a valid string.");
-				}else if(entities.containsKey(entityTypeName) || basicEntities.containsKey(entityTypeName)){
-					System.out.println("ERROR: Entity name already exists.");
+				}else if(entities.containsKey(entityTypeName) || basicEntities.containsKey(entityTypeName) || relationships.containsKey(entityTypeName)){
+					System.out.println("ERROR: Name already exists.");
 				}else{
 					break;
 				}
@@ -57,7 +111,6 @@ public class Reader {
 						BasicEntity basicTypeEntity = basicEntities.get(basicType);
 							
 						name = basicTypeEntity.getName();
-						contexts.add(basicTypeEntity.getContext());
 					}
 					break;
 				}
@@ -115,6 +168,7 @@ public class Reader {
 	    	Entity newEntity = new Entity(entityTypeName, basicType, name, contexts, attributes);
 	    	entities.put(entityTypeName, newEntity);
 	    	
+	    	br.close();
 	    }catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,8 +192,8 @@ public class Reader {
 				
 				if(relationshipTypeName == null || relationshipTypeName.length() == 0 || Pattern.matches("[a-z]+", relationshipTypeName)==false){
 					System.out.println("ERROR: Please enter a valid string.");
-				}else if(relationships.containsKey(relationshipTypeName)){
-					System.out.println("ERROR: Relationship name already exists.");
+				}else if(entities.containsKey(relationshipTypeName) || basicEntities.containsKey(relationshipTypeName) || relationships.containsKey(relationshipTypeName)){
+					System.out.println("ERROR: Name already exists.");
 				}else{
 					break;
 				}
@@ -197,6 +251,7 @@ public class Reader {
 	    	Relationship relationship = new Relationship(relationshipTypeName, entity1Name, entity1Type, entity2Name, entity2Type, context);
 	    	relationships.put(relationshipTypeName, relationship);
 	    	
+	    	br.close();
 	    }catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -205,13 +260,26 @@ public class Reader {
 	
 	public void searchQuery(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
 		
-		while(true){
+		try {
 			System.out.println("Please type your query. End it with a '$'.");
+				
+			String query = "";
+				
+		   	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			String line = "";
+			while((line = br.readLine()) != null){
+				line = line.trim().toUpperCase();
+				query += line + " ";
+				if(query.endsWith("$")){
+					break;
+				}
+			}
+				
+			new Searcher().SearchQuery(query, relationships, entities, basicEntities);
 			
-			
-			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 	}
 	
 	

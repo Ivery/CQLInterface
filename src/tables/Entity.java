@@ -43,6 +43,10 @@ public class Entity {
 		this.contexts.add(context);
 	}
 	
+	public void addContexts(Set<String> contexts){
+		this.contexts.addAll(contexts);
+	}
+	
 	public void addAttribute(String name, String basicType, String context){
 		this.attributeMap.put(name, new Attribute(name, basicType, context));
 	}
@@ -55,7 +59,7 @@ public class Entity {
 		return name;
 	}
 	
-	public String fetBasicType(){
+	public String getBasicType(){
 		return basicType;
 	}
 	

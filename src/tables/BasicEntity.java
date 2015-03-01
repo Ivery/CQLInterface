@@ -4,9 +4,13 @@ package tables;
 public class BasicEntity {
 	protected String entityTypeName;
 	protected String name;
-	protected String context;
 
 	public BasicEntity(){}
+	
+	public BasicEntity(String entityTypeName, String name){
+		this.entityTypeName = entityTypeName;
+		this.name = name;
+	}
 	
 	public void setEntityTypeName(String entityTypeName){
 		this.entityTypeName = entityTypeName;
@@ -16,20 +20,12 @@ public class BasicEntity {
 		this.name = name;
 	}
 	
-	public void setContext(String context){
-		this.context = context;
-	}
-	
 	public String getEntityTypeName(){
 		return entityTypeName;
 	}
 	
 	public String getName(){
 		return name;
-	}
-	
-	public String getContext(){
-		return context;
 	}
 	
 }

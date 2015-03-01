@@ -34,11 +34,11 @@ public class Attribute {
 		return name;
 	}
 	
-	public String setBasicType(){
+	public String getBasicType(){
 		return basicType;
 	}
 	
-	public String setContetct(){
+	public String getContetct(){
 		return context;
 	}
 	
