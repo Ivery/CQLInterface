@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import tables.Attribute;
 import tables.BasicEntity;
 import tables.Entity;
 import tables.Relationship;
@@ -60,7 +61,7 @@ public class SQLParser {
 		if(failed == 0){
 			parse(sqlParser);
 			groupToTypes();			
-			String cql = translate();
+			cqlQuery = translate();
 			
 		}else{
 			System.out.println(sqlParser.getErrormessage());
@@ -135,13 +136,9 @@ public class SQLParser {
 						}
 						
 					}
-					
-					System.out.println("group nos = " + groupNos);
-					
+										
 					for(UsedTable usedTable : usedTables.values()){
 						usedTable.addKeyAttributes(usedAttributeTypes, relationships, entities, basicEntities);
-						
-						usedTable.print();
 					}
 					
 				}else{
@@ -152,9 +149,7 @@ public class SQLParser {
 				System.out.println("Currently we only support simple SELECT-FROM-WHERE statement");
 			}
 		}
-		
-		System.out.println("used attribute types = " + usedAttributeTypes);
-		
+				
 		return cqlQuery;
 	}
 	
@@ -166,12 +161,29 @@ public class SQLParser {
 		String whereClause = "";
 		
 		// select
-		/* 				
-		 * int entity1GroupIndex = groupNos.get(entity1FullName);
-		 * String entity1Alias = groupToTypes.get(entity1GroupIndex) + String.valueOf(entity1GroupIndex);
-		 * 
-		 */
 		
+		for(String selectedColumn : selectedColumns){
+			int columnGroupIndex = groupNos.get(selectedColumn);
+			String columnRepresnetation = "";
+			if(groupValues.containsKey(columnGroupIndex)){
+				columnRepresnetation = groupValues.get(columnGroupIndex);
+				
+				if(selectClause.length()!=0){
+					selectClause += ", ";
+				}
+				selectClause += columnRepresnetation;
+				
+			}else{
+				columnRepresnetation = groupToTypes.get(columnGroupIndex) + String.valueOf(columnGroupIndex);
+				
+				if(selectClause.length()!=0){
+					selectClause += ", ";
+				}
+				selectClause += "#" + columnRepresnetation;	
+			}
+		}
+		 				
+		selectClause = "SELECT " + selectClause;
 		
 		// FROM clause
 		for(Entry<Integer, String> groupToType : groupToTypes.entrySet()){
@@ -182,9 +194,7 @@ public class SQLParser {
 		}
 		if(fromClause.length()!=0){
 			fromClause = "FROM" + fromClause.substring(0, fromClause.length()-1);
-		}
-		System.out.println(fromClause);
-		
+		}		
 		
 		
 		// WHERE clause
@@ -264,19 +274,64 @@ public class SQLParser {
 				
 			}else if(tableType.equals("entities")){	//
 				// add key attribute first
+				Entity entity = entities.get(name);
 				
+				String entityName = entity.getName();
+				String entityFullName = alias + "." + entityName;
+				String entityRepresentation = "";
+				
+				int entityGroupIndex = groupNos.get(entityFullName);
+				if(groupValues.containsKey(entityGroupIndex)){
+					entityRepresentation = groupValues.get(entityGroupIndex);
+				}else{
+					entityRepresentation = groupToTypes.get(entityGroupIndex) + String.valueOf(entityGroupIndex);
+									
+					String pattern = "[#" + entityRepresentation;
+						
+					for(String context : entity.getContexts()){
+						pattern += " " + context;
+					}
+					pattern += "]<20>";
+					patterns.add(pattern);
+				}
 				
 				// add every attribute used
-				
+				for(String attributeName : usedAttributeTypes.keySet()){
+					if(attributeName.startsWith(alias+".")){
+						String attributeRepresentation = "";
+						int attributeGroupIndex = groupNos.get(attributeName);
+						if(groupValues.containsKey(attributeGroupIndex)){
+							attributeRepresentation = groupValues.get(attributeGroupIndex);
+						}else{
+							attributeRepresentation = groupToTypes.get(attributeGroupIndex) + String.valueOf(attributeGroupIndex);
+						}
+						
+						String[] attributeInfo = attributeName.split(".");
+						Attribute attribute = entity.getAttribute(attributeInfo[1]);
+						String context = attribute.getContext();
+						
+						String pattern = "[#" + entityRepresentation + " " + context + " " + attributeRepresentation +"]<20>";
+						patterns.add(pattern);
+					}
+				}
 			}
 			
 		}
-		// combine patterns into where clause
-		System.out.println(patterns.toString());
+		// TODO: combine patterns into where clause
+		for(String pattern : patterns){
+			String formattedPattern = "pattern(\"" + pattern + "\")";
+			
+			if(whereClause.length()!=0){
+				whereClause += " AND ";
+			}
+			
+			whereClause += formattedPattern;
+		}
 		
+		whereClause = "WHERE " + whereClause;
 		
-		
-		
+		cql = selectClause + "\n" + fromClause + "\n" + whereClause;
+				
 		return cql;
 	}
 	

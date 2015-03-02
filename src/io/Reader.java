@@ -1,6 +1,8 @@
 package io;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Arrays;
@@ -20,29 +22,32 @@ public class Reader {
 	// TODO: check the validity of the input schema file
 	// TODO: instead of simply keywords, we can ask the users to type patterns
 	
-	public void loadSavedSchema(String path, HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+	public void loadSavedSchema(String path, HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities) throws FileNotFoundException{
+    	BufferedReader br = new BufferedReader(new FileReader(path));
+    	
     	try {
 			String line = "";
 			
 			while((line = br.readLine())!=null && line.equals("BasicEntities:") == false){
+				
 			}
 			
 			while((line = br.readLine())!=null && line.equals("Entities:") == false){
-				String[] entityInfo = line.split(";");
+				String[] entityInfo = line.split(";", -1);
 				BasicEntity entity = new BasicEntity(entityInfo[0], entityInfo[1]);
-				basicEntities.put(entityInfo[0], entity);
+				basicEntities.put(entityInfo[0], entity);				
 			}
 			
+			
 			while((line = br.readLine())!=null && line.equals("Relationships:") == false){
-				String[] entityInfo = line.split(";");
+				String[] entityInfo = line.split(";", -1);
 				Entity entity = new Entity();
 				entity.setEntityTypeName(entityInfo[0]);
 				entity.setName(entityInfo[1]);
 				entity.setBasicType(entityInfo[2]);
 				String[] contexts = new String[0];
 				if(entityInfo[3]!=null && entityInfo[3].length()!=0){
+					contexts = entityInfo[3].split(",");
 					entity.addContexts(new HashSet<String>(Arrays.asList(contexts)));
 				}
 				if(entityInfo[4]!=null && entityInfo[4].length()!=0){
@@ -57,13 +62,13 @@ public class Reader {
 				entities.put(entityInfo[0], entity);
 			}
 			
+
 			while((line = br.readLine())!=null){
-				String[] entityInfo = line.split(";");
+				String[] entityInfo = line.split(";", -1);
 				Relationship newRelationship = new Relationship(entityInfo[0], entityInfo[1], entityInfo[2], entityInfo[3], entityInfo[4], entityInfo[5]);
 				relationships.put(entityInfo[0], newRelationship);
 			}
-			
-			
+						
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -258,7 +263,7 @@ public class Reader {
 		
 	}
 	
-	public void searchQuery(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities){
+	public void searchQuery(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities) throws Exception{
 		
 		try {
 			System.out.println("Please type your query. End it with a '$'.");
@@ -269,13 +274,18 @@ public class Reader {
 			String line = "";
 			while((line = br.readLine()) != null){
 				line = line.trim().toUpperCase();
-				query += line + " ";
+				System.out.println(line);
+				query += line;
 				if(query.endsWith("$")){
+					query = query.substring(0, query.length()-1);
 					break;
 				}
+				query += " ";
 			}
+			
+			System.out.println("start searching");
 				
-			new Searcher().SearchQuery(query, relationships, entities, basicEntities);
+			new Searcher().SearchQuery(query.toUpperCase(), relationships, entities, basicEntities);
 			
 		} catch (IOException e) {
 			e.printStackTrace();

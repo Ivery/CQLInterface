@@ -26,7 +26,7 @@ public class Attribute {
 		this.basicType = basicType;
 	}
 	
-	public void setContetct(String context){
+	public void setContext(String context){
 		this.context = context;
 	}
 	
@@ -38,7 +38,7 @@ public class Attribute {
 		return basicType;
 	}
 	
-	public String getContetct(){
+	public String getContext(){
 		return context;
 	}
 	

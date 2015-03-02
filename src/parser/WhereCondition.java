@@ -25,7 +25,6 @@ public class WhereCondition implements IExpressionVisitor{
 	
 	// TODO: assumed the where condition is always like "attribute = attribute" or "attribute = value"
 	// TODO: only handles 'AND'
-	// TODO: check the validation of attribute names using usedTable in groupAttribute
 	
 	private TExpression condition;
 	private List<String> columns = new ArrayList<String>();
