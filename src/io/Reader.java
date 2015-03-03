@@ -47,12 +47,12 @@ public class Reader {
 				entity.setBasicType(entityInfo[2]);
 				String[] contexts = new String[0];
 				if(entityInfo[3]!=null && entityInfo[3].length()!=0){
-					contexts = entityInfo[3].split(",");
+					contexts = entityInfo[3].split(",",-1);
 					entity.addContexts(new HashSet<String>(Arrays.asList(contexts)));
 				}
 				if(entityInfo[4]!=null && entityInfo[4].length()!=0){
-					for(String attribute : entityInfo[4].split(".")){
-						String[] attributeInfo = attribute.split(",");
+					for(String attribute : entityInfo[4].split("\\.",-1)){
+						String[] attributeInfo = attribute.split(",",-1);
 						String name = attributeInfo[0];
 						String basicType = attributeInfo[1];
 						String context = attributeInfo[2];
@@ -274,7 +274,6 @@ public class Reader {
 			String line = "";
 			while((line = br.readLine()) != null){
 				line = line.trim().toUpperCase();
-				System.out.println(line);
 				query += line;
 				if(query.endsWith("$")){
 					query = query.substring(0, query.length()-1);

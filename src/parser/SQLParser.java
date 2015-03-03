@@ -132,7 +132,11 @@ public class SQLParser {
 						usedTables.get(tableAlias).addAttribute(usedAttributeTypes, columnName, relationships, entities, basicEntities);
 						
 						if(groupNos.containsKey(columnName) == false){
-							groupNos.put(columnName, Collections.max(groupNos.values())+1);
+							if(groupNos.size()==0){
+								groupNos.put(columnName, 1);
+							}else{
+								groupNos.put(columnName, Collections.max(groupNos.values())+1);
+							}
 						}
 						
 					}
@@ -306,12 +310,16 @@ public class SQLParser {
 							attributeRepresentation = groupToTypes.get(attributeGroupIndex) + String.valueOf(attributeGroupIndex);
 						}
 						
-						String[] attributeInfo = attributeName.split(".");
-						Attribute attribute = entity.getAttribute(attributeInfo[1]);
-						String context = attribute.getContext();
+						String[] attributeInfo = attributeName.split("\\.", -1);
 						
-						String pattern = "[#" + entityRepresentation + " " + context + " " + attributeRepresentation +"]<20>";
-						patterns.add(pattern);
+						
+						if(entity.getName().equals(attributeInfo[1]) == false){
+							Attribute attribute = entity.getAttribute(attributeInfo[1]);
+							String context = attribute.getContext();
+							
+							String pattern = "[#" + entityRepresentation + " " + context + " " + attributeRepresentation +"]<20>";
+							patterns.add(pattern);
+						}
 					}
 				}
 			}
@@ -327,19 +335,25 @@ public class SQLParser {
 			
 			whereClause += formattedPattern;
 		}
-		
-		whereClause = "WHERE " + whereClause;
-		
+		if(whereClause.length()!=0){
+			whereClause = "WHERE " + whereClause;
+		}
 		cql = selectClause + "\n" + fromClause + "\n" + whereClause;
 				
-		return cql;
+		return cql.toLowerCase();
 	}
 	
 	public void groupToTypes(){
 		for(Entry<String, Integer> groupNo : groupNos.entrySet()){
 			int index = groupNo.getValue();
 			if(groupToTypes.containsKey(index) == false){
-				groupToTypes.put(index, usedAttributeTypes.get(groupNo.getKey()));
+				String entityType = usedAttributeTypes.get(groupNo.getKey());
+				if(entities.containsKey(entityType)){
+					groupToTypes.put(index, entities.get(entityType).getBasicType());
+				}else if(basicEntities.containsKey(entityType)){
+					groupToTypes.put(index, entityType);
+				}
+				
 			}
 		}
 	}

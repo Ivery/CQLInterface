@@ -198,8 +198,8 @@ public class WhereCondition implements IExpressionVisitor{
 			Entity entity = entities.get(tableName);
 			if(entity.getName().equals(attributeName)){
 				usedAttributeTypes.put(attribute, entity.getEntityTypeName());
-			}else if(entity.getAllAttributes().containsKey(attribute)){
-				usedAttributeTypes.put(attribute, entity.getAllAttributes().get(attribute).getBasicType());
+			}else if(entity.getAllAttributes().containsKey(attributeName)){
+				usedAttributeTypes.put(attribute, entity.getAllAttributes().get(attributeName).getBasicType());
 			}else{
 				throw new UserException("attribute " + attribute + " not exist");
 			}
