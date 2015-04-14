@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -258,6 +259,18 @@ public class Reader {
 	    }catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+	}
+	
+	public void printSchema(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities) throws Exception{
+		System.out.println("Basic Entities:");
+		for(Entry<String, BasicEntity> basicEntity : basicEntities.entrySet()){
+			System.out.println("Basic Entity Name : " + basicEntity.getKey());
+			System.out.println("Key Attribute Name : " + basicEntity.getValue().getName());
+		}
+		System.out.println();
+		
+		System.out.println("Compound Entities:");
 		
 	}
 	
