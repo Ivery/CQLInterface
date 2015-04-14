@@ -22,7 +22,7 @@ public class Entity {
 		this.name = name;
 		this.basicType = basicType;
 		this.contexts = new HashSet<String>();
-		contexts.addAll(contexts);
+		this.contexts.addAll(contexts);
 		this.attributeMap = new HashMap<String, Attribute>();
 		attributeMap.putAll(attributeMap);
 	}

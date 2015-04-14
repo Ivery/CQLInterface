@@ -163,6 +163,7 @@ public class SQLParser {
 		String selectClause = "";
 		String fromClause = "";
 		String whereClause = "";
+		String groupByClause = "";
 		
 		// select
 		
@@ -186,7 +187,9 @@ public class SQLParser {
 				selectClause += "#" + columnRepresnetation;	
 			}
 		}
-		 				
+		
+		groupByClause = selectClause;
+		groupByClause = "GROUP BY " + groupByClause;
 		selectClause = "SELECT " + selectClause;
 		
 		// FROM clause
@@ -338,7 +341,8 @@ public class SQLParser {
 		if(whereClause.length()!=0){
 			whereClause = "WHERE " + whereClause;
 		}
-		cql = selectClause + "\n" + fromClause + "\n" + whereClause;
+		
+		cql = selectClause + "\n" + fromClause + "\n" + whereClause + "\n" + groupByClause;
 				
 		return cql.toLowerCase();
 	}
@@ -366,7 +370,7 @@ public class SQLParser {
 		basicEntities.put("PERSON", newBasicEntity);
 		Relationship newRelationship = new Relationship("FRIEND", "PERSON1", "PERSON", "PERSON2", "PERSON", "FRIEND");
 		relationships.put("FRIEND", newRelationship);
-		new SQLParser().parse(query);
+		System.out.println(new SQLParser().parse(query));
 	}
 	
 }

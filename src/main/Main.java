@@ -51,14 +51,12 @@ public class Main {
 					System.out.println("What's the path of input schema file?");
 					Scanner scanner = new Scanner(System.in);
 					new Reader().loadSavedSchema(scanner.nextLine(), relationships, entities, basicEntities);
-					scanner.close();
 					System.out.println("Loaded");
 					break;
 				case 6:
 					System.out.print("Where do you want to save the schema?");
 					Scanner scanner2 = new Scanner(System.in); 
 					new Writer().saveCurrentSchema(scanner2.nextLine(), relationships, entities, basicEntities);
-					scanner2.close();
 					break;
 				case 0:return;
 				}

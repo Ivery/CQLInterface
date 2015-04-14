@@ -53,7 +53,7 @@ public class Writer {
 			writer.println(entityLine);
 		}
 		
-		System.out.println("Relationships:");
+		writer.println("Relationships:");
 		for(Relationship relationship : relationships.values()){
 			String relationshipLine = "";
 			

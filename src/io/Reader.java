@@ -91,7 +91,7 @@ public class Reader {
 				entityTypeName = br.readLine();
 				entityTypeName = entityTypeName.trim().toUpperCase();
 				
-				if(entityTypeName == null || entityTypeName.length() == 0 || Pattern.matches("[a-z]+", entityTypeName)==false){
+				if(entityTypeName == null || entityTypeName.length() == 0 || Pattern.matches("[A-Z0-9]+", entityTypeName)==false){
 					System.out.println("ERROR: Please enter a valid string.");
 				}else if(entities.containsKey(entityTypeName) || basicEntities.containsKey(entityTypeName) || relationships.containsKey(entityTypeName)){
 					System.out.println("ERROR: Name already exists.");
@@ -170,10 +170,9 @@ public class Reader {
 	    		}
 	    	}
 	    	
-	    	Entity newEntity = new Entity(entityTypeName, basicType, name, contexts, attributes);
+	    	Entity newEntity = new Entity(entityTypeName, name, basicType, contexts, attributes);
 	    	entities.put(entityTypeName, newEntity);
 	    	
-	    	br.close();
 	    }catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -195,7 +194,7 @@ public class Reader {
 	    		relationshipTypeName = br.readLine();
 	    		relationshipTypeName = relationshipTypeName.trim().toUpperCase();
 				
-				if(relationshipTypeName == null || relationshipTypeName.length() == 0 || Pattern.matches("[a-z]+", relationshipTypeName)==false){
+				if(relationshipTypeName == null || relationshipTypeName.length() == 0 || Pattern.matches("[A-Z0-9]+", relationshipTypeName)==false){
 					System.out.println("ERROR: Please enter a valid string.");
 				}else if(entities.containsKey(relationshipTypeName) || basicEntities.containsKey(relationshipTypeName) || relationships.containsKey(relationshipTypeName)){
 					System.out.println("ERROR: Name already exists.");
@@ -205,11 +204,11 @@ public class Reader {
 			}
 	    	
 	    	while(true){
-	    		System.out.println("What's the name of the firs entity?");
+	    		System.out.println("What's the name of the first entity?");
 	    		entity1Name = br.readLine();
 	    		entity1Name = entity1Name.trim().toUpperCase();
 				
-				if(entity1Name == null || entity1Name.length() == 0 || Pattern.matches("[a-z]+", entity1Name)==false){
+				if(entity1Name == null || entity1Name.length() == 0 || Pattern.matches("[A-Z0-9]+", entity1Name)==false){
 					System.out.println("ERROR: Please enter a valid string.");
 				}else{
 					break;
@@ -217,7 +216,7 @@ public class Reader {
 			}
 	    	
 	    	while(true){
-	    		System.out.println("What's the entity type of" + entity1Name + "?");
+	    		System.out.println("What's the entity type of " + entity1Name + "?");
 	    		entity1Type = br.readLine().toUpperCase();
 				if(entities.containsKey(entity1Type) == false && basicEntities.containsKey(entity1Type) == false){
 					System.out.println("ERROR: entity type doesn't exist.");
@@ -227,11 +226,11 @@ public class Reader {
 			} 
 	    	
 	    	while(true){
-	    		System.out.println("What's the name of the firs entity?");
+	    		System.out.println("What's the name of the second entity?");
 	    		entity2Name = br.readLine();
 	    		entity2Name = entity2Name.trim().toUpperCase();
 				
-				if(entity2Name == null || entity2Name.length() == 0 || Pattern.matches("[a-z]+", entity2Name)==false){
+				if(entity2Name == null || entity2Name.length() == 0 || Pattern.matches("[A-Z0-9]+", entity2Name)==false){
 					System.out.println("ERROR: Please enter a valid string.");
 				}else if(entity1Name.equals(entity2Name)){
 					System.out.println("ERROR: Entity 2 can't have the same name as Entity 1.");
@@ -241,7 +240,7 @@ public class Reader {
 			}
 	    	
 	    	while(true){
-	    		System.out.println("What's the entity type of" + entity2Name + "?");
+	    		System.out.println("What's the entity type of " + entity2Name + "?");
 	    		entity2Type = br.readLine().toUpperCase();
 				if(entities.containsKey(entity2Type) == false && basicEntities.containsKey(entity2Type) == false){
 					System.out.println("ERROR: entity type doesn't exist.");
@@ -256,7 +255,6 @@ public class Reader {
 	    	Relationship relationship = new Relationship(relationshipTypeName, entity1Name, entity1Type, entity2Name, entity2Type, context);
 	    	relationships.put(relationshipTypeName, relationship);
 	    	
-	    	br.close();
 	    }catch (IOException e) {
 			e.printStackTrace();
 		}

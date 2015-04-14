@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import parser.SQLParser;
-import query.parser.ParserResult;
+/*import query.parser.ParserResult;
 import query.parser.StatementParserManager;
 import query.tree.QueryTreeManager;
-import query.tree.stmt.Node;
+import query.tree.stmt.Node;*/
 import tables.BasicEntity;
 import tables.Entity;
 import tables.Relationship;
@@ -25,7 +25,7 @@ public class Searcher {
 		System.out.println(cqlQuery);
 		
 		
-		File[] files=new File("/home/jiahui/workspace/CQS/datatype/").listFiles();
+	/*	File[] files=new File("/home/jiahui/workspace/CQS/datatype/").listFiles();
 		HashMap<String,String> views=new HashMap<String,String>();
 		for (int i=0;i<files.length;i++){
 			String content = "";
@@ -45,7 +45,7 @@ public class Searcher {
 			System.out.println(n.getCurrentDataInfo());
 			c++;			
 		}
-		System.out.println(c);
+		System.out.println(c);*/
 	}
 	
 }
