@@ -32,7 +32,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		try {
 			while(true){
-				System.out.println("Do you want to \n(1) Create a new entity type \n(2) Create a new relationship \n(3) Search a query \n(4)* List existing tables \n(5) Load saved schema \n(6) Save current schema \n(0) Exit\n");
+				System.out.println("Do you want to \n(1) Create a new entity type \n(2) Create a new relationship \n(3) Search a query \n(4) List existing tables \n(5) Load saved schema \n(6) Save current schema \n(0) Exit\n");
 				
 				int option = Integer.valueOf(br.readLine());
 				switch(option){
@@ -46,6 +46,7 @@ public class Main {
 					new Reader().searchQuery(relationships, entities, basicEntities);
 					break;
 				case 4: 
+					new Reader().printSchema(relationships, entities, basicEntities);
 					break;
 				case 5:
 					System.out.println("What's the path of input schema file?");

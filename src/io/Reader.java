@@ -263,15 +263,42 @@ public class Reader {
 	}
 	
 	public void printSchema(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities) throws Exception{
-		System.out.println("Basic Entities:");
+		System.out.println("Basic Entities : ");
+		int count = 1;
 		for(Entry<String, BasicEntity> basicEntity : basicEntities.entrySet()){
-			System.out.println("Basic Entity Name : " + basicEntity.getKey());
+			System.out.println("Basic Entity " + count + " Name : " + basicEntity.getKey());
 			System.out.println("Key Attribute Name : " + basicEntity.getValue().getName());
+			count++;
 		}
 		System.out.println();
 		
-		System.out.println("Compound Entities:");
+		count = 1;
+		System.out.println("Compound Entities : ");
+		for(Entry<String, Entity> entity : entities.entrySet()){
+			System.out.println("Entity Name " + count + " : " + entity.getKey());
+			System.out.println("Basic Entity Name : " + entity.getValue().getBasicType());
+			System.out.println("Key Attribute Name : " + entity.getValue().getName());
+			System.out.print("Contexts : ");
+			for(String context : entity.getValue().getContexts()){
+				System.out.println(context + " ");
+			}
+			System.out.println("Attributes : ");
+			for(Entry<String, Attribute> attribute : entity.getValue().getAllAttributes().entrySet()){
+				System.out.println("\t Attribute Name : " + attribute.getKey() + ", Attribute Basic Type : " + attribute.getValue().getBasicType() + ", Context : " + attribute.getValue().getContext());
+			}
+			count++;
+		}
 		
+		count = 1;
+		System.out.println("Relationships : ");
+		for(Entry<String, Relationship> relationship : relationships.entrySet()){
+			System.out.println("Relationship " + count + " Name : " + relationship.getKey());
+			System.out.println("Entity 1 Type : " + relationship.getValue().getEntity1Type());
+			System.out.println("Entity 1 Name : " + relationship.getValue().getEntity1Name());
+			System.out.println("Entity 2 Type : " + relationship.getValue().getEntity2Type());
+			System.out.println("Entity 2 Name : " + relationship.getValue().getEntity2Name());
+			count++;
+		}
 	}
 	
 	public void searchQuery(HashMap<String, Relationship> relationships, HashMap<String, Entity> entities, HashMap<String, BasicEntity> basicEntities) throws Exception{
